@@ -1,3 +1,6 @@
+"""
+Weather service module - handles API calls to OpenWeatherMap.
+"""
 import os
 import logging
 import requests
@@ -5,6 +8,7 @@ import requests
 logger = logging.getLogger(__name__)
 
 API_URL = "https://api.openweathermap.org/data/2.5/forecast"
+
 
 def get_forecast(city):
     """Fetch 5-day weather forecast from OpenWeatherMap."""
@@ -17,9 +21,10 @@ def get_forecast(city):
         raise ValueError("API key missing")
 
     logger.info("Calling OpenWeatherMap API for: %s", city)
-    res = requests.get(API_URL, params={"q": city, "appid": api_key, "units": "metric"}, timeout=5)
+    params = {"q": city, "appid": api_key, "units": "metric"}
+    res = requests.get(API_URL, params=params, timeout=5)
     res.raise_for_status()
-    
+
     data = res.json()
     forecasts = [
         {
@@ -29,4 +34,5 @@ def get_forecast(city):
         }
         for item in data.get("list", [])
     ]
-    return {"city": data.get("city", {}).get("name", city), "forecasts": forecasts}
+    city_name = data.get("city", {}).get("name", city)
+    return {"city": city_name, "forecasts": forecasts}

@@ -68,11 +68,9 @@ class TestFlaskRoutes(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_post_and_delete_address(self):
-        # Test POST
         res_post = self.client.post("/api/addresses", json={"city": "Eilat"})
         self.assertEqual(res_post.status_code, 201)
 
-        # Test DELETE
         res_del = self.client.delete("/api/addresses", json={"city": "Eilat"})
         self.assertEqual(res_del.status_code, 200)
 

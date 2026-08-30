@@ -1,3 +1,6 @@
+"""
+Flask application - Weather Forecast API server.
+"""
 import os
 import logging
 from flask import Flask, request, jsonify
@@ -15,6 +18,7 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 mgr = AddressManager()
 
+
 @app.route("/api/forecast")
 def forecast_route():
     city = request.args.get("city", "")
@@ -27,14 +31,15 @@ def forecast_route():
         logger.error("Forecast error: %s", str(e))
         return jsonify({"error": "Failed to fetch weather"}), 500
 
+
 @app.route("/api/addresses", methods=["GET", "POST", "DELETE"])
 def addresses_route():
     if request.method == "GET":
         return jsonify({"addresses": mgr.get_all()})
-    
+
     data = request.get_json(silent=True) or {}
     city = data.get("city", "")
-    
+
     if request.method == "POST":
         try:
             return jsonify({"addresses": mgr.add(city)}), 201
@@ -46,6 +51,8 @@ def addresses_route():
             return jsonify({"message": f"Deleted {city}"})
         return jsonify({"error": "City not found"}), 404
 
+
 if __name__ == "__main__":
+    host = os.environ.get("HOST", "127.0.0.1")
     port = int(os.environ.get("PORT", 5001))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host=host, port=port)
