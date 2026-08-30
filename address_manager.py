@@ -1,10 +1,14 @@
+"""
+Address manager module - in-memory storage for saved cities.
+"""
 import logging
 
 logger = logging.getLogger(__name__)
 
+
 class AddressManager:
     def __init__(self):
-        self.addresses = []  # list of strings: ["Tel Aviv", "London"]
+        self.addresses = []
 
     def add(self, city):
         if not city or not isinstance(city, str):
