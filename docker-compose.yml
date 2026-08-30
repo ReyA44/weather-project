@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  weather-app:
+    build: .
+    container_name: weather-forecast-service
+    ports:
+      - "5001:5001"
+    environment:
+      - WEATHER_API_KEY=${WEATHER_API_KEY:-293fa9efcd55b95decb535e8ac2e95bc}
+      - HOST=0.0.0.0
+      - PORT=5001
+    restart: unless-stopped
