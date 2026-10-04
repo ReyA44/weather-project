@@ -3,7 +3,7 @@ from unittest.mock import patch, Mock
 from address_manager import AddressManager
 from weather_service import get_forecast
 from app import app
-
+import base64
 
 # Test class for the AddressManager — each method tests one behavior
 class TestAddressManager(unittest.TestCase):
@@ -80,24 +80,33 @@ class TestWeatherService(unittest.TestCase):
         self.assertEqual(len(data["forecasts"]), 1)
 
 
-# Test class for Flask HTTP routes — tests the API endpoints
+
+# (Keep TestAddressManager and TestWeatherService as they are)
+
 class TestFlaskRoutes(unittest.TestCase):
     def setUp(self):
-        # Creating a test client that simulates HTTP requests without running the server
         self.client = app.test_client()
+        # Create standard Basic Auth header (admin:1234)
+        encoded_auth = base64.b64encode(b"admin:1234").decode("ascii")
+        self.headers = {"Authorization": f"Basic {encoded_auth}"}
 
     def test_get_addresses_empty(self):
-        # Sending a GET request to /api/addresses and expecting a 200 OK response
-        response = self.client.get("/api/addresses")
+        response = self.client.get("/api/addresses", headers=self.headers)
         self.assertEqual(response.status_code, 200)
 
     def test_post_and_delete_address(self):
-        # Sending a POST request to add "Eilat" and expecting 201 Created
-        res_post = self.client.post("/api/addresses", json={"city": "Eilat"})
+        res_post = self.client.post(
+            "/api/addresses",
+            json={"city": "Eilat"},
+            headers=self.headers
+        )
         self.assertEqual(res_post.status_code, 201)
 
-        # Sending a DELETE request to remove "Eilat" and expecting 200 OK
-        res_del = self.client.delete("/api/addresses", json={"city": "Eilat"})
+        res_del = self.client.delete(
+            "/api/addresses",
+            json={"city": "Eilat"},
+            headers=self.headers
+        )
         self.assertEqual(res_del.status_code, 200)
 
 
