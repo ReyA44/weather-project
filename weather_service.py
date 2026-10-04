@@ -36,3 +36,4 @@ def get_forecast(city):
     ]
     city_name = data.get("city", {}).get("name", city)
     return {"city": city_name, "forecasts": forecasts}
+    

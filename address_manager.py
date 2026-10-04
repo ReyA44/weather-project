@@ -28,3 +28,4 @@ class AddressManager:
             logger.info("Deleted address: %s", city)
             return True
         return False
+        
